@@ -1,0 +1,79 @@
+class HashTable {
+  constructor(size = 53) {
+    this.size = size;
+    this.table = new Array(this.size);
+  }
+
+  // Hash function to convert keys to indices
+  hash(key) {
+    let total = 0;
+    const WEIRD_PRIME = 31; // A prime number to reduce collisions
+    for (let i = 0; i < Math.min(key.length, 100); i++) {
+      const char = key[i];
+      const value = char.charCodeAt(0) - 96; // 'a' -> 1, 'b' -> 2, etc.
+      total = (total * WEIRD_PRIME + value) % this.size;
+    }
+    return total;
+  }
+
+  // Insert a key-value pair
+  set(key, value) {
+    const index = this.hash(key);
+    if (!this.table[index]) {
+      this.table[index] = [];
+    }
+    this.table[index].push([key, value]);
+  }
+
+  // Retrieve a value by its key
+  get(key) {
+    const index = this.hash(key);
+    const bucket = this.table[index];
+    if (!bucket) return undefined;
+
+    for (let i = 0; i < bucket.length; i++) {
+      if (bucket[i][0] === key) {
+        return bucket[i][1];
+      }
+    }
+    return undefined; // If key doesn't exist
+  }
+
+  // Remove a key-value pair by its key
+  remove(key) {
+    const index = this.hash(key);
+    const bucket = this.table[index];
+    if (!bucket) return false;
+
+    for (let i = 0; i < bucket.length; i++) {
+      if (bucket[i][0] === key) {
+        bucket.splice(i, 1); // Remove the key-value pair from the array
+        return true;
+      }
+    }
+    return false; // If key doesn't exist
+  }
+
+  // Check if a key exists in the hash table
+  has(key) {
+    const index = this.hash(key);
+    const bucket = this.table[index];
+    if (!bucket) return false;
+
+    for (let i = 0; i < bucket.length; i++) {
+      if (bucket[i][0] === key) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  // Display all key-value pairs
+  display() {
+    for (let i = 0; i < this.size; i++) {
+      if (this.table[i]) {
+        console.log(`${i}: ${JSON.stringify(this.table[i])}`);
+      }
+    }
+  }
+}
