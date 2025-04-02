@@ -1,0 +1,130 @@
+//Que Data Structure
+class Stack {
+    constructor() {
+        this.items = [];
+    }
+
+    push(element) {
+        this.items.push(element);
+    }
+
+    pop() {
+        return this.items.pop();
+    }
+
+    peek() {
+        return this.items[this.items.length - 1];
+    }
+
+    isEmpty() {
+        return this.items.length === 0;
+    }
+
+    size() {
+        return this.items.length;
+    }
+}
+
+function isBalancedParentheses(str) {
+    const stack = new Stack();
+    const openBrackets = '({[';
+    const closeBrackets = ')}]';
+    const matchingBrackets = {
+        ')': '(',
+        '}': '{',
+        ']': '['
+    };
+
+    for (let i = 0; i < str.length; i++) {
+        const char = str[i];
+
+        if (openBrackets.includes(char)) {
+            stack.push(char);
+        } else if (closeBrackets.includes(char)) {
+            if (stack.isEmpty()) return false; // More closing brackets than opening
+            if (stack.pop() !== matchingBrackets[char]) return false; // Mismatched brackets
+        }
+    }
+
+    return stack.isEmpty(); // True if all brackets are matched, false otherwise
+}
+
+// Example Usage
+const expression1 = "{[()()]}"  // Balanced
+const expression2 = "{[(])}"    // Not Balanced
+
+console.log(isBalancedParentheses(expression1)); // true
+console.log(isBalancedParentheses(expression2)); // false
+
+
+
+
+
+//Que Data Structure
+
+
+class QueueUsingTwoStacks {
+    constructor() {
+        this.stack1 = [];
+        this.stack2 = [];
+    }
+
+    // Enqueue operation: Push an element onto stack1
+    enqueue(element) {
+        this.stack1.push(element);
+    }
+
+    // Dequeue operation: Pop an element from stack2 (reversed stack1)
+    dequeue() {
+        if (this.stack2.length === 0) {
+            if (this.stack1.length === 0) {
+                return "Queue is empty";
+            }
+
+            // Transfer elements from stack1 to stack2, reversing the order
+            while (this.stack1.length > 0) {
+                this.stack2.push(this.stack1.pop());
+            }
+        }
+
+        return this.stack2.pop(); // Dequeue from stack2
+    }
+
+    // Front operation: Peek at the front element
+    front() {
+        if (this.stack2.length === 0) {
+            if (this.stack1.length === 0) {
+                return "Queue is empty";
+            }
+
+            // Transfer elements from stack1 to stack2
+            while (this.stack1.length > 0) {
+                this.stack2.push(this.stack1.pop());
+            }
+        }
+
+        return this.stack2[this.stack2.length - 1];
+    }
+
+    isEmpty() {
+        return this.stack1.length === 0 && this.stack2.length === 0;
+    }
+
+    size() {
+        return this.stack1.length + this.stack2.length;
+    }
+}
+
+// Example Usage
+const queue = new QueueUsingTwoStacks();
+queue.enqueue(10);
+queue.enqueue(20);
+queue.enqueue(30);
+
+console.log(queue.dequeue()); // 10
+console.log(queue.front()); // 20
+queue.enqueue(40);
+console.log(queue.dequeue()); // 20
+console.log(queue.dequeue()); // 30
+console.log(queue.dequeue()); // 40
+console.log(queue.dequeue()); // "Queue is empty"
